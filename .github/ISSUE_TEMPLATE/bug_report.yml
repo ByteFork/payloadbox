@@ -1,0 +1,67 @@
+name: Bug report
+description: Report something broken or unexpected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug report. A quick search of existing issues
+        may turn up a match - please check before opening a new one.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Short description of the observed behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include curl commands, config values, or a minimal reproducer.
+      placeholder: |
+        1. Start payloadbox with `LOG_LEVEL=debug`
+        2. Send `curl -X POST http://localhost:8080/...`
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Output of `payloadbox -v` or the container image tag."
+      placeholder: "v0.1.2 / ghcr.io/bytefork/payloadbox:0.1.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: how-run
+    attributes:
+      label: How you ran it
+      options:
+        - Binary (go install / release artifact)
+        - Docker (distroless)
+        - Docker (alpine)
+        - From source (go run)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste any JSON log lines from stdout. Sensitive data should be redacted.
+      render: shell
+    validations:
+      required: false

@@ -1,0 +1,20 @@
+payloadbox
+*.exe
+*.dll
+*.so
+*.dylib
+
+*.test
+*.out
+coverage.*
+profile.out
+
+# goreleaser output
+dist/
+
+# SBOM generated during CI before goreleaser runs
+/bom.json
+
+.DS_Store
+
+.env

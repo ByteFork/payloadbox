@@ -1,0 +1,17 @@
+defaultBaseImage: ghcr.io/distroless/static
+
+defaultPlatforms:
+  - linux/arm64
+  - linux/amd64
+builds:
+  - id: GopherNet 
+    dir: .
+    main: main.go
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/ByteFork/payloadbox/main.BuildSha={{ .Git.FullCommit }}
+      - -s -w -X github.com/ByteFork/payloadbox/main.BuildTime={{ .Timestamp }}
+      - -s -w -X github.com/ByteFork/payloadbox/main.Version={{ .Git.Tag }}

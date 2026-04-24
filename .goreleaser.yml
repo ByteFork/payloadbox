@@ -1,0 +1,136 @@
+version: 2
+project_name: payloadbox
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    binary: "{{.ProjectName}}"
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/ByteFork/payloadbox/main.BuildSha={{ .FullCommit }}
+      - -X github.com/ByteFork/payloadbox/main.BuildTime={{ .Date }}
+      - -X github.com/ByteFork/payloadbox/main.Version={{ .Version }}
+
+signs:
+  - id: cosign
+    cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: all
+    output: true
+
+dockers_v2:
+  # Distroless static image (default flavor).
+  - id: distroless
+    dockerfile: Dockerfile.goreleaser
+    images:
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/{{ .ProjectName }}"
+    tags:
+      - "{{ .Version }}"
+      - "{{ if not .IsNightly }}latest{{ end }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    labels: &oci-labels
+      org.opencontainers.image.ref.name: "{{ .Env.GITHUB_REPOSITORY_OWNER }}/{{.ProjectName}}"
+      org.opencontainers.image.authors: "{{ .Env.GITHUB_REPOSITORY_OWNER }}"
+      org.opencontainers.image.created: '{{ time "2006-01-02T15:04:05Z07:00" }}'
+      org.opencontainers.image.description: "Lightweight, self-hosted HTTP Request Inspector"
+      org.opencontainers.image.licenses: MIT
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
+      org.opencontainers.image.source: "https://github.com/{{ .Env.GITHUB_REPOSITORY_OWNER }}/{{ .ProjectName }}"
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.url: "https://github.com/{{ .Env.GITHUB_REPOSITORY_OWNER }}/{{ .ProjectName }}"
+      org.opencontainers.image.vendor: "{{ .Env.GITHUB_REPOSITORY_OWNER }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+
+  # Alpine-based image with curl and ca-certificates for operators who want a shell.
+  - id: alpine
+    dockerfile: Dockerfile.alpine
+    images:
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/{{ .ProjectName }}"
+    tags:
+      - "{{ .Version }}-alpine"
+      - "{{ if not .IsNightly }}latest-alpine{{ end }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    labels: *oci-labels
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+      - "^style:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: Performance
+      regexp: '^.*?perf(\(.+\))??!?:.+$'
+      order: 2
+    - title: Refactors
+      regexp: '^.*?refactor(\(.+\))??!?:.+$'
+      order: 3
+    - title: Dependency updates
+      regexp: '^.*?build(deps)(\(.+\))??!?:.+$'
+      order: 4
+    - title: Others
+      order: 999
+
+docker_signs:
+  - id: cosign-images
+    cmd: cosign
+    artifacts: all
+    output: true
+    args:
+      - sign
+      - "${artifact}@${digest}"
+      - --yes
+
+release:
+  extra_files:
+    - glob: ./bom.json
+  github:
+    owner: ByteFork
+    name: payloadbox
+  header: |
+    ## Installation
+
+    To install `{{ .ProjectName }}`, download one of the pre-built binaries provided for your platform from the artifacts attached to this release.
+
+    ## Container Images
+
+    The `{{ .ProjectName }}` binaries are also available as container images, based on Distroless Static and Alpine Linux.
+    The Alpine Linux image includes `curl` and `ca-certificates` packages. The Distroless Static image is smaller and does
+    not include any additional packages.
+
+    Container images are available for the following architectures: `linux/amd64` and `linux/arm64`.
+
+    ### GitHub Container Registry
+
+    - `ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY }}:latest`
+    - `ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY }}:{{ .Version }}`
+    - `ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY }}:{{ .Version }}-alpine`

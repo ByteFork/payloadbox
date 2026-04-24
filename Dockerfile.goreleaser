@@ -1,0 +1,6 @@
+FROM gcr.io/distroless/static-debian12:nonroot
+
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/payloadbox /usr/local/bin/
+
+ENTRYPOINT ["/usr/local/bin/payloadbox"]
