@@ -76,7 +76,25 @@ Environment variables only.
 
 ## Installation
 
-Download a binary from [Releases](https://github.com/ByteFork/payloadbox/releases) or install from source:
+### Install script
+
+```bash
+curl -fsSL https://install.bytefork.io/payloadbox | sh
+```
+
+Installs the latest release to `/usr/local/bin`. The script detects your OS and architecture, downloads the matching release asset, and verifies SHA-256 against the release's `checksums.txt`.
+
+To pin a specific version:
+
+```bash
+curl -fsSL https://install.bytefork.io/payloadbox | sh -s -- --version v0.0.1
+```
+
+Pass `--help` for other options.
+
+### Alternative methods
+
+Download a binary directly from [Releases](https://github.com/ByteFork/payloadbox/releases), or install from source:
 
 ```bash
 $ go install github.com/ByteFork/payloadbox@latest
