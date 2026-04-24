@@ -12,6 +12,6 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X github.com/ByteFork/payloadbox/main.BuildSha={{ .Git.FullCommit }}
-      - -s -w -X github.com/ByteFork/payloadbox/main.BuildTime={{ .Timestamp }}
-      - -s -w -X github.com/ByteFork/payloadbox/main.Version={{ .Git.Tag }}
+      - -s -w -X main.BuildSha={{ .Git.FullCommit }}
+      - -s -w -X main.BuildTime={{ .Timestamp }}
+      - -s -w -X main.Version={{ .Git.Tag }}

@@ -15,9 +15,9 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/ByteFork/payloadbox/main.BuildSha={{ .FullCommit }}
-      - -X github.com/ByteFork/payloadbox/main.BuildTime={{ .Date }}
-      - -X github.com/ByteFork/payloadbox/main.Version={{ .Version }}
+      - -X main.BuildSha={{ .FullCommit }}
+      - -X main.BuildTime={{ .Date }}
+      - -X main.Version={{ .Version }}
 
 signs:
   - id: cosign
