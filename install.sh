@@ -2,8 +2,11 @@
 # PayloadBox installer.
 #
 # Usage:
+#   curl -fsSL https://install.bytefork.io/payloadbox | sh
+#   curl -fsSL https://install.bytefork.io/payloadbox | sh -s -- --version v0.0.1 --bindir ~/.local/bin
+#
+# Alternate (direct from GitHub, no vanity redirect):
 #   curl -fsSL https://raw.githubusercontent.com/ByteFork/payloadbox/main/install.sh | sh
-#   curl -fsSL https://raw.githubusercontent.com/ByteFork/payloadbox/main/install.sh | sh -s -- --version v0.0.1 --bindir ~/.local/bin
 
 set -eu
 
