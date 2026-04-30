@@ -5,6 +5,7 @@
 Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
 
 [![build](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/go.yml?branch=main&label=build)](https://github.com/ByteFork/payloadbox/actions/workflows/go.yml)
+[![UI checks](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/ui.yml?branch=main&label=ui%20checks)](https://github.com/ByteFork/payloadbox/actions/workflows/ui.yml)
 [![Release](https://img.shields.io/github/v/release/ByteFork/payloadbox?sort=semver)](https://github.com/ByteFork/payloadbox/releases/latest)
 [![License](https://img.shields.io/github/license/ByteFork/payloadbox)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ByteFork/payloadbox)](https://goreportcard.com/report/github.com/ByteFork/payloadbox)
@@ -13,8 +14,9 @@ Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent t
 
 ## Features
 
-- Captures any method and path (anything outside `/api/v1/*` becomes a record)
-- JSON API for listing, streaming, and clearing captured requests
+- Captures arbitrary HTTP requests while reserving `/`, `/index.html`, and `/assets/*` for the embedded UI
+- Embedded Svelte UI for browsing captures, inspecting headers/body/query data, and copying replayable cURL commands
+- JSON API for listing, fetching, streaming, and clearing captured requests
 - Server-Sent Events stream with a 30-second heartbeat for long-lived connections
 - Bounded in-memory ring buffer; oldest records evicted when full
 - Per-request body-size limit with graceful 413 (still recorded)
@@ -66,7 +68,8 @@ Environment variables only.
 
 | Method | Path | Purpose |
 |---|---|---|
-| `ANY` | `/*` (not `/api/v1/*`) | Capture endpoint |
+| `ANY` | `/*` | Capture endpoint, except UI assets and built-in API routes |
+| `GET` | `/` | Embedded web UI |
 | `GET` | `/api/v1/history` | List records (gzip when accepted) |
 | `GET` | `/api/v1/history/{id}` | Get one record by ID (gzip when accepted) |
 | `DELETE` | `/api/v1/history` | Clear records |
