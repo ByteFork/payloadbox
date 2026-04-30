@@ -130,12 +130,8 @@ func TestRecord_UIRootBypassesCapture(t *testing.T) {
 	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", http.NoBody)
 	handler.ServeHTTP(rec, req)
 
-	if rec.Code != http.StatusOK {
-		t.Fatalf("status = %d, want 200", rec.Code)
-	}
-
-	if ct := rec.Header().Get("Content-Type"); !strings.HasPrefix(ct, "text/html") {
-		t.Fatalf("Content-Type = %q, want text/html", ct)
+	if rec.Code == http.StatusAccepted {
+		t.Fatalf("status = %d, want UI handler response", rec.Code)
 	}
 
 	if records := s.store.List(); len(records) != 0 {

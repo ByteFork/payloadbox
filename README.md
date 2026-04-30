@@ -1,13 +1,13 @@
 <div align="center" markdown="1">
 
-# PayloadBox
+![PayloadBox](./docs/assets/banner.svg)
+
+Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
 
 [![build](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/go.yml?branch=main&label=build)](https://github.com/ByteFork/payloadbox/actions/workflows/go.yml)
 [![Release](https://img.shields.io/github/v/release/ByteFork/payloadbox?sort=semver)](https://github.com/ByteFork/payloadbox/releases/latest)
 [![License](https://img.shields.io/github/license/ByteFork/payloadbox)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ByteFork/payloadbox)](https://goreportcard.com/report/github.com/ByteFork/payloadbox)
-
-Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
 
 </div>
 
