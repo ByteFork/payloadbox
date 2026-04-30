@@ -1,13 +1,13 @@
 <div align="center" markdown="1">
 
-# PayloadBox
+![PayloadBox](./docs/assets/banner.svg)
+
+Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
 
 [![build](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/go.yml?branch=main&label=build)](https://github.com/ByteFork/payloadbox/actions/workflows/go.yml)
 [![Release](https://img.shields.io/github/v/release/ByteFork/payloadbox?sort=semver)](https://github.com/ByteFork/payloadbox/releases/latest)
 [![License](https://img.shields.io/github/license/ByteFork/payloadbox)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ByteFork/payloadbox)](https://goreportcard.com/report/github.com/ByteFork/payloadbox)
-
-Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
 
 </div>
 
@@ -57,7 +57,7 @@ Environment variables only.
 | Variable | Default | Description |
 |---|---|---|
 | `LISTEN_ADDRESS` | `:8080` | Host and port to bind |
-| `MAX_BODY_SIZE_BYTES` | `1024` | Per-request body limit; over-limit returns 413 but is still recorded |
+| `MAX_BODY_SIZE_BYTES` | `5120` | Per-request body limit; over-limit returns 413 but is still recorded |
 | `MAX_RECORDS_TO_STORE` | `200` | Ring-buffer capacity |
 | `LOG_HTTP_REQUESTS` | `true` | Log each capture to stdout |
 | `LOG_LEVEL` | `info` | One of `debug`, `info`, `warn`, `error` |
@@ -68,6 +68,7 @@ Environment variables only.
 |---|---|---|
 | `ANY` | `/*` (not `/api/v1/*`) | Capture endpoint |
 | `GET` | `/api/v1/history` | List records (gzip when accepted) |
+| `GET` | `/api/v1/history/{id}` | Get one record by ID (gzip when accepted) |
 | `DELETE` | `/api/v1/history` | Clear records |
 | `GET` | `/api/v1/events` | SSE stream of new records |
 | `GET` | `/api/v1/settings` | Current effective config |

@@ -18,8 +18,8 @@ func TestNewSettings_Defaults(t *testing.T) {
 		t.Errorf("Address = %q, want %q", s.Address, ":8080")
 	}
 
-	if s.MaxBodySizeBytes != 1024 {
-		t.Errorf("MaxBodySizeBytes = %d, want 1024", s.MaxBodySizeBytes)
+	if s.MaxBodySizeBytes != 5120 {
+		t.Errorf("MaxBodySizeBytes = %d, want 5120", s.MaxBodySizeBytes)
 	}
 
 	if s.MaxRecordsToStore != 200 {
@@ -70,8 +70,8 @@ func TestNewSettings_InvalidEnvFallsBackToDefault(t *testing.T) {
 	t.Setenv("LOG_HTTP_REQUESTS", "maybe")
 
 	s := NewSettings()
-	if s.MaxBodySizeBytes != 1024 {
-		t.Errorf("MaxBodySizeBytes = %d, want default 1024", s.MaxBodySizeBytes)
+	if s.MaxBodySizeBytes != 5120 {
+		t.Errorf("MaxBodySizeBytes = %d, want default 5120", s.MaxBodySizeBytes)
 	}
 
 	if s.MaxRecordsToStore != 200 {

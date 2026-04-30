@@ -32,6 +32,7 @@ func newTestHandler(t *testing.T, settings ServerSettings) (http.Handler, *Serve
 
 		server.ListRecords(w, r)
 	})))
+	mux.Handle("GET /api/v1/history/{id}", middleware.Gzip(http.HandlerFunc(server.GetRecord)))
 	mux.HandleFunc("/api/v1/events", server.Events)
 	mux.HandleFunc("/", server.Record)
 
@@ -97,6 +98,47 @@ func TestRecord_CapturesAndStores(t *testing.T) {
 	}
 }
 
+func TestRecord_GETUnknownPathIsCaptured(t *testing.T) {
+	handler, s := newTestHandler(t, defaultSettings())
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/aaaaz", http.NoBody)
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusAccepted {
+		t.Fatalf("status = %d, want 202", rec.Code)
+	}
+
+	if got := rec.Body.String(); got != "Request logged GET /aaaaz\n" {
+		t.Fatalf("body = %q, want recorder response", got)
+	}
+
+	records := s.store.List()
+	if len(records) != 1 {
+		t.Fatalf("store has %d records, want 1", len(records))
+	}
+
+	if records[0].Request.Path != "/aaaaz" {
+		t.Errorf("path = %q, want /aaaaz", records[0].Request.Path)
+	}
+}
+
+func TestRecord_UIRootBypassesCapture(t *testing.T) {
+	handler, s := newTestHandler(t, defaultSettings())
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", http.NoBody)
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code == http.StatusAccepted {
+		t.Fatalf("status = %d, want UI handler response", rec.Code)
+	}
+
+	if records := s.store.List(); len(records) != 0 {
+		t.Fatalf("store has %d records, want 0", len(records))
+	}
+}
+
 func TestRecord_BodyTooLargeStillCaptured(t *testing.T) {
 	settings := defaultSettings()
 	settings.MaxBodySizeBytes = 10
@@ -153,6 +195,58 @@ func TestListRecords_ReturnsJSONArray(t *testing.T) {
 
 	if len(s.store.List()) != len(records) {
 		t.Errorf("server store has %d, response has %d", len(s.store.List()), len(records))
+	}
+}
+
+func TestGetRecord_ByID(t *testing.T) {
+	handler, s := newTestHandler(t, defaultSettings())
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/x", strings.NewReader("hi"))
+	req.Header.Set("Content-Type", "text/plain")
+	handler.ServeHTTP(rec, req)
+
+	stored := s.store.List()
+	if len(stored) != 1 {
+		t.Fatalf("store has %d records, want 1", len(stored))
+	}
+
+	id := stored[0].ID
+	if id == "" {
+		t.Fatal("record has empty ID")
+	}
+
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/v1/history/"+id, http.NoBody)
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+
+	var got Record
+	if err := json.NewDecoder(rec.Body).Decode(&got); err != nil {
+		t.Fatal(err)
+	}
+
+	if got.ID != id {
+		t.Errorf("returned ID = %q, want %q", got.ID, id)
+	}
+
+	if got.Request.Path != "/x" {
+		t.Errorf("returned path = %q, want /x", got.Request.Path)
+	}
+}
+
+func TestGetRecord_UnknownIDReturns404(t *testing.T) {
+	handler, _ := newTestHandler(t, defaultSettings())
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/v1/history/does-not-exist", http.NoBody)
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404", rec.Code)
 	}
 }
 

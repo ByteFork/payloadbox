@@ -10,7 +10,7 @@ coverage.*
 profile.out
 
 # goreleaser output
-dist/
+/dist/
 
 # SBOM generated during CI before goreleaser runs
 /bom.json

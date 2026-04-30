@@ -6,10 +6,10 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/ByteFork/payloadbox/internal/logutil"
+	"github.com/ByteFork/payloadbox/ui"
 )
 
 // sseKeepaliveInterval is how often the SSE handler emits a heartbeat comment
@@ -25,8 +25,8 @@ var (
 func (s *Server) Record(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
-	if r.Method == http.MethodGet && !strings.HasPrefix(r.URL.Path, "/api/") {
-		s.UI(w, r)
+	if (r.Method == http.MethodGet || r.Method == http.MethodHead) && ui.ShouldServe(r.URL.Path) {
+		ui.Handler.ServeHTTP(w, r)
 		return
 	}
 
@@ -90,6 +90,29 @@ func (s *Server) Record(w http.ResponseWriter, r *http.Request) {
 			"path", logutil.SafeField(r.URL.Path),
 			"method", logutil.SafeField(r.Method),
 		)
+	}
+}
+
+func (s *Server) GetRecord(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	rec, ok := s.store.Find(func(rec Record) bool { return rec.ID == id })
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(false)
+
+	if err := enc.Encode(rec); err != nil {
+		slog.Error("encode record", "error", logutil.SafeField(err.Error()))
 	}
 }
 

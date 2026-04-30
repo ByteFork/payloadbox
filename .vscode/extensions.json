@@ -4,6 +4,8 @@
     "redhat.vscode-yaml",
     "ms-azuretools.vscode-containers",
     "github.vscode-github-actions",
-    "editorconfig.editorconfig"
+    "editorconfig.editorconfig",
+    "biomejs.biome",
+    "svelte.svelte-vscode"
   ]
 }

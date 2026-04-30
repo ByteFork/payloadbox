@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/ByteFork/payloadbox/internal/hub"
 	"github.com/ByteFork/payloadbox/internal/store"
 )
@@ -34,6 +36,7 @@ type (
 	}
 
 	Record struct {
+		ID        string       `json:"id"`
 		CreatedAt time.Time    `json:"created_at"`
 		Duration  int64        `json:"duration_ns"`
 		Request   RequestData  `json:"request"`
@@ -60,6 +63,7 @@ func NewRecord(req *http.Request, reqBody string, status int, respHeaders http.H
 	}
 
 	return Record{
+		ID:        newRecordID(),
 		CreatedAt: time.Now().UTC(),
 		Duration:  duration,
 		Request: RequestData{
@@ -79,4 +83,17 @@ func NewRecord(req *http.Request, reqBody string, status int, respHeaders http.H
 			Size:       size,
 		},
 	}
+}
+
+// newRecordID returns a stable, time-ordered identifier for a captured request.
+// UUIDv7 sorts as bytes by creation time, which makes it a natural primary key
+// for the in-memory store and any future persistence. A random UUIDv4 is used
+// as a fallback if v7 generation fails (extremely rare; documented in
+// google/uuid as a clock/entropy edge case).
+func newRecordID() string {
+	if id, err := uuid.NewV7(); err == nil {
+		return id.String()
+	}
+
+	return uuid.NewString()
 }
