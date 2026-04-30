@@ -2,7 +2,7 @@
 
 ![PayloadBox](./docs/assets/banner.svg)
 
-Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent to it, inspect headers and body, and stream new captures live over Server-Sent Events - all in a single static binary.
+Lightweight, self-hosted HTTP Request Inspector with a built-in web interface. Capture any HTTP request, inspect headers and bodies live in your browser, and stream new captures over Server-Sent Events - all from a single static binary.
 
 [![build](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/go.yml?branch=main&label=build)](https://github.com/ByteFork/payloadbox/actions/workflows/go.yml)
 [![UI checks](https://img.shields.io/github/actions/workflow/status/ByteFork/payloadbox/ui.yml?branch=main&label=ui%20checks)](https://github.com/ByteFork/payloadbox/actions/workflows/ui.yml)
@@ -14,8 +14,8 @@ Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent t
 
 ## Features
 
-- Captures arbitrary HTTP requests while reserving `/`, `/index.html`, and `/assets/*` for the embedded UI
-- Embedded Svelte UI for browsing captures, inspecting headers/body/query data, and copying replayable cURL commands
+- Captures arbitrary HTTP requests while reserving `/`, `/index.html`, and `/assets/*` for the built-in web UI
+- Built-in web interface for browsing captures, inspecting headers/body/query data, and copying replayable cURL commands
 - JSON API for listing, fetching, streaming, and clearing captured requests
 - Server-Sent Events stream with a 30-second heartbeat for long-lived connections
 - Bounded in-memory ring buffer; oldest records evicted when full
@@ -46,10 +46,18 @@ event: record
 data: {"created_at":"2026-04-23T19:00:01Z",...}
 ```
 
+Open the built-in web interface:
+
+```bash
+~ open http://localhost:8080
+```
+
+The UI is embedded in the binary, so there is no separate frontend server to run.
+
 ### Container Image
 
 ```bash
-~ docker run --rm -p 8080:8080 ghcr.io/bytefork/payloadbox:latest
+docker run --rm -p 8080:8080 ghcr.io/bytefork/payloadbox:latest
 ```
 
 ## Configuration
@@ -101,7 +109,7 @@ Pass `--help` for other options.
 Download a binary directly from [Releases](https://github.com/ByteFork/payloadbox/releases), or install from source:
 
 ```bash
-~ go install github.com/ByteFork/payloadbox@latest
+go install github.com/ByteFork/payloadbox@latest
 ```
 
 ## Development
