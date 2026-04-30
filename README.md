@@ -25,21 +25,21 @@ Lightweight, self-hosted HTTP Request Inspector. Capture any HTTP request sent t
 Start the server and send it a request:
 
 ```bash
-$ payloadbox
+~ payloadbox
 {"time":"2026-04-23T19:00:00Z","level":"INFO","msg":"starting server","address":":8080"}
 
-$ curl -X POST http://localhost:8080/webhooks/test \
+~ curl -X POST http://localhost:8080/webhooks/test \
     -H 'Content-Type: application/json' -d '{"event":"ping"}'
 Request logged POST /webhooks/test
 
-$ curl -s http://localhost:8080/api/v1/history | jq '.[0].request.path'
-"/webhooks/test"
+~ curl -s http://localhost:8080/api/v1/history | jq -r '.[-1].request.path'
+/webhooks/test
 ```
 
 Watch captures arrive live:
 
 ```bash
-$ curl -N http://localhost:8080/api/v1/events
+~ curl -N http://localhost:8080/api/v1/events
 event: record
 data: {"created_at":"2026-04-23T19:00:01Z",...}
 ```
@@ -47,7 +47,7 @@ data: {"created_at":"2026-04-23T19:00:01Z",...}
 ### Container Image
 
 ```bash
-$ docker run --rm -p 8080:8080 ghcr.io/bytefork/payloadbox:latest
+~ docker run --rm -p 8080:8080 ghcr.io/bytefork/payloadbox:latest
 ```
 
 ## Configuration
@@ -98,7 +98,7 @@ Pass `--help` for other options.
 Download a binary directly from [Releases](https://github.com/ByteFork/payloadbox/releases), or install from source:
 
 ```bash
-$ go install github.com/ByteFork/payloadbox@latest
+~ go install github.com/ByteFork/payloadbox@latest
 ```
 
 ## Development
