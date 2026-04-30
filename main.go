@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -46,6 +49,7 @@ func main() {
 
 		server.ListRecords(w, r)
 	})))
+	mux.Handle("GET /api/v1/history/{id}", middleware.Gzip(http.HandlerFunc(server.GetRecord)))
 	mux.HandleFunc("/api/v1/events", server.Events)
 	mux.HandleFunc("/", server.Record)
 
@@ -58,7 +62,17 @@ func main() {
 		IdleTimeout:       60 * time.Second,
 	}
 
-	slog.Info("starting server", "address", server.settings.Address)
+	host, port, err := net.SplitHostPort(server.settings.Address)
+	if err != nil {
+		host, port = "localhost", strings.TrimPrefix(server.settings.Address, ":")
+	}
+
+	if host == "" || host == "0.0.0.0" || host == "::" {
+		host = "localhost"
+	}
+
+	url := fmt.Sprintf("http://%s:%s", host, port)
+	slog.Info("starting server", "address", server.settings.Address, "url", url)
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {

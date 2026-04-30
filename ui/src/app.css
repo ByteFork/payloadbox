@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  overflow: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Accent color — active: green (#d97706).
+     Swap the block below to change the accent app-wide. */
+
+  --primary: #d97706;
+  --primary-dim: color-mix(in srgb, var(--primary) 12%, transparent);
+  --primary-glow: color-mix(in srgb, var(--primary) 25%, transparent);
+
+  /* Alternatives — uncomment one, and comment the green block above.
+   *
+   * Red (PayloadBox original):
+   *   --primary: #bf123d;
+   *
+   * Blue:
+   *   --primary: #2563eb;
+   *
+   * Purple:
+   *   --primary: #7c3aed;
+   *
+   * Amber:
+   *   --primary: #d97706;
+   */
+
+  --mono: "Fira Code", monospace;
+
+  /* Font scale — bump the whole system by editing here.
+     Text tiers (smallest → largest). Icons and badges keep literal px. */
+  --fs-micro:   11px;  /* chips, separators, secondary labels, "last 15m"         */
+  --fs-data:    12px;  /* row path/values, meta in detail header, json body       */
+  --fs-ui:      13px;  /* section headers, search input, tab labels, buttons      */
+  --fs-emph:    14px;  /* inspector path line, inline code, section intro <p>     */
+  --fs-body:    15px;  /* overview paragraph, step titles, "Select a request"     */
+  --fs-page:    16px;  /* page h1 (Configuration, Documentation)                  */
+  --fs-stat-sm: 20px;  /* stat card big value — Response tab                      */
+  --fs-stat:    22px;  /* stat card big value — Overview                          */
+  --fs-h2:      24px;  /* Docs section <h2>                                       */
+
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface2: #f8f9fb;
+  --border: rgba(0, 0, 0, 0.07);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --text: #111827;
+  --text-2: #374151;
+  --text-3: #6b7280;
+  --text-4: #9ca3af;
+
+  --sidebar-bg: var(--surface);
+  --sidebar-text: var(--text);
+  --sidebar-text-dim: var(--text-3);
+  --sidebar-hover: var(--surface2);
+  --sidebar-active: rgba(0, 0, 0, 0.07);
+  --sidebar-border: var(--border);
+
+  --code-bg: #1e2533;
+  --code-text: #94a3b8;
+
+  --get: #2563eb;
+  --get-bg: #eff6ff;
+  --post: #059669;
+  --post-bg: #ecfdf5;
+  --put: #d97706;
+  --put-bg: #fffbeb;
+  --patch: #7c3aed;
+  --patch-bg: #f5f3ff;
+  --delete: #dc2626;
+  --delete-bg: #fef2f2;
+  --head: #0891b2;
+  --head-bg: #ecfeff;
+  --options: #65a30d;
+  --options-bg: #f7fee7;
+
+  --ok: #059669;
+  --ok-bg: #ecfdf5;
+  --warn: #d97706;
+  --warn-bg: #fffbeb;
+  --err: #dc2626;
+  --err-bg: #fef2f2;
+  --info: #2563eb;
+  --info-bg: #eff6ff;
+}
+
+.dark {
+  --bg: #0f1117;
+  --surface: #161b27;
+  --surface2: #1c2333;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text: #f1f5f9;
+  --text-2: #cbd5e1;
+  --text-3: #94a3b8;
+  --text-4: #475569;
+
+  --sidebar-bg: #0d1018;
+  --sidebar-border: rgba(255, 255, 255, 0.04);
+  --sidebar-active: rgba(255, 255, 255, 0.09);
+
+  --get-bg: rgba(37, 99, 235, 0.12);
+  --post-bg: rgba(5, 150, 105, 0.12);
+  --put-bg: rgba(217, 119, 6, 0.12);
+  --patch-bg: rgba(124, 58, 237, 0.12);
+  --delete-bg: rgba(220, 38, 38, 0.12);
+  --head-bg: rgba(8, 145, 178, 0.12);
+  --options-bg: rgba(101, 163, 13, 0.12);
+
+  --ok-bg: rgba(5, 150, 105, 0.12);
+  --warn-bg: rgba(217, 119, 6, 0.12);
+  --err-bg: rgba(220, 38, 38, 0.12);
+  --info-bg: rgba(37, 99, 235, 0.12);
+
+  color-scheme: dark;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes flash-row {
+  0% {
+    background: var(--surface2);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.req-row-new {
+  animation: flash-row 1.2s ease-out;
+}
+.detail-enter {
+  animation: slide-in-right 0.18s ease-out;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+input {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+.font-mono {
+  font-family: var(--mono);
+}
+
+.json-key {
+  color: #7c3aed;
+}
+.json-str {
+  color: #059669;
+}
+.json-num {
+  color: #2563eb;
+}
+.json-bool {
+  color: #d97706;
+}
+.json-null {
+  color: #9ca3af;
+}
+
+.dark .json-key {
+  color: #a78bfa;
+}
+.dark .json-str {
+  color: #34d399;
+}
+.dark .json-num {
+  color: #60a5fa;
+}
+.dark .json-bool {
+  color: #fbbf24;
+}

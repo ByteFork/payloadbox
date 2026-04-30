@@ -57,7 +57,7 @@ Environment variables only.
 | Variable | Default | Description |
 |---|---|---|
 | `LISTEN_ADDRESS` | `:8080` | Host and port to bind |
-| `MAX_BODY_SIZE_BYTES` | `1024` | Per-request body limit; over-limit returns 413 but is still recorded |
+| `MAX_BODY_SIZE_BYTES` | `5120` | Per-request body limit; over-limit returns 413 but is still recorded |
 | `MAX_RECORDS_TO_STORE` | `200` | Ring-buffer capacity |
 | `LOG_HTTP_REQUESTS` | `true` | Log each capture to stdout |
 | `LOG_LEVEL` | `info` | One of `debug`, `info`, `warn`, `error` |
@@ -68,6 +68,7 @@ Environment variables only.
 |---|---|---|
 | `ANY` | `/*` (not `/api/v1/*`) | Capture endpoint |
 | `GET` | `/api/v1/history` | List records (gzip when accepted) |
+| `GET` | `/api/v1/history/{id}` | Get one record by ID (gzip when accepted) |
 | `DELETE` | `/api/v1/history` | Clear records |
 | `GET` | `/api/v1/events` | SSE stream of new records |
 | `GET` | `/api/v1/settings` | Current effective config |

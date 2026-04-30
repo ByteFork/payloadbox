@@ -9,7 +9,7 @@ import (
 
 type ServerSettings struct {
 	Address           string `default:":8080" env:"LISTEN_ADDRESS"`
-	MaxBodySizeBytes  int64  `default:"1024" env:"MAX_BODY_SIZE_BYTES"`
+	MaxBodySizeBytes  int64  `default:"5120" env:"MAX_BODY_SIZE_BYTES"`
 	MaxRecordsToStore int    `default:"200" env:"MAX_RECORDS_TO_STORE"`
 	LogRequests       bool   `default:"true" env:"LOG_HTTP_REQUESTS"`
 	LogLevel          string `default:"info" env:"LOG_LEVEL"`

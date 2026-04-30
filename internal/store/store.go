@@ -77,6 +77,33 @@ func (s *Store[T]) List() []T {
 	return out
 }
 
+// Find returns the first item for which match returns true, or the zero value
+// of T and false if none match. The scan walks oldest-first.
+func (s *Store[T]) Find(match func(T) bool) (T, bool) {
+	var zero T
+	if s == nil {
+		return zero, false
+	}
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for i := range s.size {
+		var item T
+		if s.capacity == 0 {
+			item = s.data[i]
+		} else {
+			item = s.data[(s.head+i)%s.capacity]
+		}
+
+		if match(item) {
+			return item, true
+		}
+	}
+
+	return zero, false
+}
+
 func (s *Store[T]) Len() int {
 	if s == nil {
 		return 0

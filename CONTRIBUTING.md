@@ -8,16 +8,37 @@ Open an issue describing the change if it is non-trivial. Small fixes (typos, do
 
 ## Development
 
-Requires Go 1.26+.
+Requires Go 1.26+, Node (version pinned in `ui/.nvmrc`), and pnpm.
 
 ```bash
 git clone https://github.com/ByteFork/payloadbox.git
 cd payloadbox
 
+# Build the UI bundle. The Go binary embeds ui/dist at compile time
+# (//go:embed all:dist in ui/embed.go), so this step must precede go build.
+pnpm --dir ui install
+pnpm --dir ui build
+
 go build -o payloadbox .
 go test -race ./...
 golangci-lint run ./...
 ```
+
+### UI workflow
+
+```bash
+cd ui
+
+pnpm dev          # Vite dev server; proxies /api, /version, /healthz, /api/v1/events
+pnpm build        # writes ui/dist (consumed by go build)
+pnpm check        # svelte-check (TypeScript + Svelte)
+pnpm lint         # biome + oxlint
+pnpm fix          # biome check --write && oxlint --fix
+pnpm knip         # unused exports / dependencies
+pnpm test:e2e     # Playwright; auto-starts ../payloadbox via playwright.config.ts
+```
+
+For UI iteration: run `./payloadbox` at the repo root in one terminal, then `pnpm dev` in `ui/` in another. Vite proxies API calls to `:8080`.
 
 ## Pull request workflow
 
@@ -34,6 +55,7 @@ golangci-lint run ./...
 - `golangci-lint` must pass with 0 issues (see `.golangci.yml`).
 - Tests accompany new functionality. The `internal/*` packages are at or near 100% line coverage; try not to regress that.
 - No `TODO`/`FIXME` without a linked issue number.
+- For UI changes: `pnpm check`, `pnpm lint`, and `pnpm knip` must pass; e2e specs (`pnpm test:e2e`) cover new user-visible behavior.
 
 ## AI usage
 
