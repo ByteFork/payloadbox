@@ -22,6 +22,8 @@ jobs:
         with:
           go-version-file: go.mod
       - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: ui/package.json
       - uses: actions/setup-node@v6
         with:
           node-version-file: ui/.nvmrc
