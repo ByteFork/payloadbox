@@ -4,6 +4,10 @@
 ## Test plan
 - [ ] `go test -race ./...` passes
 - [ ] `golangci-lint run ./...` passes
+- [ ] `pnpm --dir ui run check` passes
+- [ ] `pnpm --dir ui run check:biome` passes
+- [ ] `pnpm --dir ui run lint:oxlint` passes
+- [ ] `pnpm --dir ui run test:e2e` passes
 - [ ] Manual verification (describe if applicable):
 
 ## Related
