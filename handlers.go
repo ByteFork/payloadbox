@@ -56,9 +56,11 @@ func (s *Server) Record(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusRequestEntityTooLarge
 		respBody := "Request Body Too Large"
 
-		// Record the attempt even if it failed due to size
 		duration := time.Since(start).Nanoseconds()
 		record := NewRecord(r, "", status, nil, respBody, duration, int64(len(respBody)))
+		w.Header().Set(payloadboxRecordIDHeader, record.ID)
+		record.Response.Headers = w.Header().Clone()
+
 		s.store.Add(record)
 		s.hub.Publish(record)
 
@@ -73,6 +75,8 @@ func (s *Server) Record(w http.ResponseWriter, r *http.Request) {
 
 	duration := time.Since(start).Nanoseconds()
 	record := NewRecord(r, string(body), status, w.Header(), respBody, duration, int64(len(respBody)))
+	w.Header().Set(payloadboxRecordIDHeader, record.ID)
+	record.Response.Headers = w.Header().Clone()
 	s.store.Add(record)
 	s.hub.Publish(record)
 

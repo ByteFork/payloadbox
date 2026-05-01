@@ -81,6 +81,14 @@ func TestRecord_CapturesAndStores(t *testing.T) {
 	}
 
 	got := records[0]
+	if got.ID == "" {
+		t.Fatal("record has empty ID")
+	}
+
+	if headerID := rec.Header().Get(payloadboxRecordIDHeader); headerID != got.ID {
+		t.Errorf("%s = %q, want stored record ID %q", payloadboxRecordIDHeader, headerID, got.ID)
+	}
+
 	if got.Request.Method != http.MethodPost {
 		t.Errorf("method = %q, want POST", got.Request.Method)
 	}
@@ -95,6 +103,10 @@ func TestRecord_CapturesAndStores(t *testing.T) {
 
 	if got.Response.StatusCode != http.StatusAccepted {
 		t.Errorf("response status = %d, want 202", got.Response.StatusCode)
+	}
+
+	if gotHeader := http.Header(got.Response.Headers).Get(payloadboxRecordIDHeader); gotHeader != got.ID {
+		t.Errorf("recorded response %s = %q, want %q", payloadboxRecordIDHeader, gotHeader, got.ID)
 	}
 }
 
@@ -161,6 +173,10 @@ func TestRecord_BodyTooLargeStillCaptured(t *testing.T) {
 
 	if records[0].Response.StatusCode != http.StatusRequestEntityTooLarge {
 		t.Errorf("recorded status = %d, want 413", records[0].Response.StatusCode)
+	}
+
+	if headerID := rec.Header().Get(payloadboxRecordIDHeader); headerID != records[0].ID {
+		t.Errorf("%s = %q, want stored record ID %q", payloadboxRecordIDHeader, headerID, records[0].ID)
 	}
 }
 

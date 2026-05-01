@@ -10,6 +10,8 @@ import (
 	"github.com/ByteFork/payloadbox/internal/store"
 )
 
+const payloadboxRecordIDHeader = "X-Payloadbox-Record-ID"
+
 type (
 	Server struct {
 		settings ServerSettings
