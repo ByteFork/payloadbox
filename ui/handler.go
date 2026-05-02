@@ -9,7 +9,8 @@ import (
 var Handler http.Handler = http.HandlerFunc(serve)
 
 func ShouldServe(path string) bool {
-	return path == "/" || path == "/index.html" || strings.HasPrefix(path, "/assets/")
+	return path == "/" || path == "/index.html" ||
+		path == "/favicon.ico" || strings.HasPrefix(path, "/assets/")
 }
 
 func serve(w http.ResponseWriter, r *http.Request) {
