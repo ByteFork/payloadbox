@@ -22,6 +22,8 @@ Lightweight, self-hosted HTTP Request Inspector with a built-in web interface. C
 - Per-request body-size limit with graceful 413 (still recorded)
 - Published as Distroless Static and Alpine Linux container images
 
+### User Interface
+
 <div align="center">
 
 ![PayloadBox UI](https://github.com/user-attachments/assets/7fedb2f9-7564-48d8-b02d-5f53a6fe8c36)
