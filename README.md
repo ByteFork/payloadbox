@@ -26,7 +26,7 @@ Lightweight, self-hosted HTTP Request Inspector with a built-in web interface. C
 
 <div align="center">
 
-![PayloadBox UI](https://github.com/user-attachments/assets/7fedb2f9-7564-48d8-b02d-5f53a6fe8c36)
+![PayloadBox UI](https://github.com/user-attachments/assets/2a00e7d7-4378-4e9b-9881-b1c19bb23533)
 
 </div>
 
