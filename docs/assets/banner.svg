@@ -29,7 +29,7 @@
     </filter>
   </defs>
 
-  <rect width="1280" height="320" fill="url(#bg)"/>
+  <rect width="1280" height="320" rx="18" fill="url(#bg)"/>
 
   <!-- Subtle UI silhouettes: narrow menu rail and request-list rows. -->
   <g opacity="0.48" filter="url(#shadow)">
