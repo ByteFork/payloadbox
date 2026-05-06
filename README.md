@@ -22,6 +22,12 @@ Lightweight, self-hosted HTTP Request Inspector with a built-in web interface. C
 - Per-request body-size limit with graceful 413 (still recorded)
 - Published as Distroless Static and Alpine Linux container images
 
+<div align="center">
+
+![PayloadBox UI](https://github.com/user-attachments/assets/7fedb2f9-7564-48d8-b02d-5f53a6fe8c36)
+
+</div>
+
 ## Usage
 
 Start the server and send it a request:
@@ -103,6 +109,61 @@ curl -fsSL https://install.bytefork.io/payloadbox | sh -s -- --version v0.0.1
 ```
 
 Pass `--help` for other options.
+
+### Kubernetes
+
+Install the Helm chart from the ByteFork chart repository:
+
+```bash
+helm repo add bytefork https://bytefork.github.io/helm-charts
+helm repo update
+```
+
+Create a values file and adjust it for your cluster, especially the image tag,
+ingress class, and host name:
+
+```yaml
+# payloadbox-values.yaml
+deployment:
+  enabled: true
+
+probes:
+  readiness:
+    enabled: true
+  liveness:
+    enabled: true
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+  hosts:
+    - host: payloadbox.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+```
+
+Install PayloadBox:
+
+```bash
+helm install payloadbox bytefork/payloadbox \
+  --namespace payloadbox \
+  --create-namespace \
+  --values payloadbox-values.yaml
+```
+
+To apply changes later:
+
+```bash
+helm upgrade payloadbox bytefork/payloadbox \
+  --namespace payloadbox \
+  --values payloadbox-values.yaml
+```
 
 ### Alternative methods
 
